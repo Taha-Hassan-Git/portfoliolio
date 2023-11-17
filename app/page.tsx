@@ -1,7 +1,13 @@
 "use client";
+
 import { useState } from "react";
-import sanitise from "../utils/sanitise";
-import { ChatGPTMessage } from "../utils/openAIStream";
+import { useLocalStorage } from "./hooks/useLocalStorage";
+import { Assistant } from "openai/resources/beta/assistants/assistants.mjs";
+import { Thread } from "openai/resources/beta/threads/threads.mjs";
+interface ChatGPTMessage {
+  role: "assistant" | "user";
+  content: string;
+}
 
 export default function Home() {
   const [messages, setMessages] = useState<ChatGPTMessage[]>([
@@ -13,74 +19,28 @@ export default function Home() {
   ]);
   const [inputContent, setInputContent] = useState<string>("");
   const [error, setError] = useState<string | null>(null);
-  const [stream, setStream] = useState<string | null>(null);
+  const [assistant, setAssistant] = useLocalStorage<{
+    assistant: Assistant;
+    thread: Thread;
+  } | null>("assistant", null);
 
   const onSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
-    setStream("");
     event.preventDefault();
-    const time = 1000;
 
     setMessages((messages) => [
       ...messages,
       { role: "user", content: inputContent },
     ]);
     setInputContent("");
-    const response = await fetch("/api/generate", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(messages),
-    });
 
-    if (response.status === 400) {
-      setError(response.statusText);
-      setTimeout(() => setError(""), time);
-      return;
+    if (!assistant) {
+      await createAssistant({ messages, setError, setAssistant });
     }
-
-    if (response.status === 404) {
-      setError("404 Not Found");
-      setTimeout(() => setError(""), time);
-      return;
-    }
-    if (response.status === 500) {
-      setError("API Key Depracated, contact developers.");
-      setTimeout(() => setError(""), time);
-      return;
-    }
-    if (response.status !== 200) {
-      const data = await response.json();
-      setError(data.statusText);
-      setTimeout(() => setError(""), time);
-    }
-    const data = await response.json();
-    console.log(data);
-
-    /* const streamedData: string[] = [];
-
-    while (!done) {
-      const { value, done: doneReading } = await reader.read();
-      done = doneReading;
-      const chunkValue = decoder.decode(value);
-      setStream((prev) => prev + chunkValue);
-      streamedData.push(chunkValue);
-    }
-
-    const finalData = streamedData.join(""); */
-
-    //const sanitisedData = sanitise(finalData);
-    setMessages((messages) => [
-      ...messages,
-      { role: "assistant", content: data.content },
-    ]);
-
-    setStream("");
   };
 
   return (
     <div className="flex flex-col h-screen w-screen items-center justify-between gap-4 p-3">
-      <div className="flex flex-col items-start gap-4 overflow-scroll">
+      <div className="flex flex-col items-start p-4 gap-4 overflow-scroll">
         <h1 className="p-10 text-xl self-center">
           Let&apos;s get some info for your Skeleton
         </h1>
@@ -121,3 +81,46 @@ const AssistantMessage = ({ content }: { content: string }) => (
     <p className="text-green-400 font-mono">{content}</p>
   </div>
 );
+
+async function createAssistant({
+  messages,
+  setError,
+  setAssistant,
+}: {
+  messages: ChatGPTMessage[];
+  setError: React.Dispatch<React.SetStateAction<string | null>>;
+  setAssistant: (
+    setter:
+      | {
+          assistant: Assistant;
+          thread: Thread;
+        }
+      | ((
+          value: {
+            assistant: Assistant;
+            thread: Thread;
+          } | null
+        ) => {
+          assistant: Assistant;
+          thread: Thread;
+        } | null)
+      | null
+  ) => void;
+}) {
+  const response = await fetch("/api/create-assistant", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ messages }),
+  });
+
+  if (response.status !== 200) {
+    const data = await response.json();
+    setError(data.statusText);
+    setTimeout(() => setError(""), 500);
+  }
+
+  const data = await response.json();
+  setAssistant({ assistant: data.assistant, thread: data.thread });
+}
