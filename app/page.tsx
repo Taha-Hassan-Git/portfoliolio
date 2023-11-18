@@ -1,24 +1,27 @@
 "use client";
 
 import { useState } from "react";
-import { useLocalStorage } from "./hooks/useLocalStorage";
+import { SetAssistant, useLocalStorage } from "./hooks/useLocalStorage";
 import { Assistant } from "openai/resources/beta/assistants/assistants.mjs";
 import { Thread } from "openai/resources/beta/threads/threads.mjs";
-interface ChatGPTMessage {
+export interface ChatGPTMessage {
   role: "assistant" | "user";
   content: string;
 }
 
 export default function Home() {
-  const [messages, setMessages] = useState<ChatGPTMessage[]>([
-    {
-      role: "assistant",
-      content:
-        "Hello, so I hear you're working on a software development apprenticeship, tell me a bit about the company you work for.",
-    },
-  ]);
   const [inputContent, setInputContent] = useState<string>("");
   const [error, setError] = useState<string | null>(null);
+  const [messages, setMessages] = useLocalStorage<ChatGPTMessage[]>(
+    "messages",
+    [
+      {
+        role: "assistant",
+        content:
+          "Hello, so I hear you're working on a software development apprenticeship, tell me a bit about the company you work for.",
+      },
+    ]
+  );
   const [assistant, setAssistant] = useLocalStorage<{
     assistant: Assistant;
     thread: Thread;
@@ -33,14 +36,56 @@ export default function Home() {
     ]);
     setInputContent("");
 
-    if (!assistant) {
-      await createAssistant({ messages, setError, setAssistant });
+    try {
+      let currentAssistant = assistant;
+
+      if (!currentAssistant) {
+        currentAssistant = await createAssistant({
+          messages,
+          setError,
+          setAssistant,
+        });
+      }
+
+      if (currentAssistant) {
+        const response = await fetch("/api/message", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            messages,
+            assistant: {
+              assistant: currentAssistant.assistant,
+              thread: currentAssistant.thread,
+            },
+          }),
+        });
+
+        if (response.status !== 200) {
+          const data = await response.json();
+          setError("Error getting response: " + data.statusText);
+          setTimeout(() => setError(""), 500);
+        } else {
+          const data = await response.json();
+          console.log("Message response: ", { data });
+        }
+      }
+    } catch (error: any) {
+      setError(error.message);
+      setTimeout(() => setError(""), 5000);
     }
   };
 
   return (
     <div className="flex flex-col h-screen w-screen items-center justify-between gap-4 p-3">
       <div className="flex flex-col items-start p-4 gap-4 overflow-scroll">
+        <button
+          onClick={() => resetAssistant(setAssistant, setMessages)}
+          className="self-start text-gray-800 text-sm rounded px-1 border bg-slate-100"
+        >
+          {assistant ? "Reset" : "No Assistant"}
+        </button>
         <h1 className="p-10 text-xl self-center">
           Let&apos;s get some info for your Skeleton
         </h1>
@@ -82,30 +127,27 @@ const AssistantMessage = ({ content }: { content: string }) => (
   </div>
 );
 
+const resetAssistant = (
+  setAssistant: SetAssistant<{ assistant: Assistant; thread: Thread } | null>,
+  setMessages: React.Dispatch<React.SetStateAction<ChatGPTMessage[]>>
+) => {
+  setAssistant(null);
+  setMessages([
+    {
+      role: "assistant",
+      content:
+        "Hello, so I hear you're working on a software development apprenticeship, tell me a bit about the company you work for.",
+    },
+  ]);
+};
+
 async function createAssistant({
   messages,
-  setError,
   setAssistant,
 }: {
   messages: ChatGPTMessage[];
   setError: React.Dispatch<React.SetStateAction<string | null>>;
-  setAssistant: (
-    setter:
-      | {
-          assistant: Assistant;
-          thread: Thread;
-        }
-      | ((
-          value: {
-            assistant: Assistant;
-            thread: Thread;
-          } | null
-        ) => {
-          assistant: Assistant;
-          thread: Thread;
-        } | null)
-      | null
-  ) => void;
+  setAssistant: SetAssistant<{ assistant: Assistant; thread: Thread } | null>;
 }) {
   const response = await fetch("/api/create-assistant", {
     method: "POST",
@@ -115,12 +157,11 @@ async function createAssistant({
     body: JSON.stringify({ messages }),
   });
 
-  if (response.status !== 200) {
+  if (response.status === 200) {
     const data = await response.json();
-    setError(data.statusText);
-    setTimeout(() => setError(""), 500);
+    setAssistant({ assistant: data.assistant, thread: data.thread });
+    return { assistant: data.assistant, thread: data.thread };
+  } else {
+    throw new Error("Failed to create assistant");
   }
-
-  const data = await response.json();
-  setAssistant({ assistant: data.assistant, thread: data.thread });
 }
