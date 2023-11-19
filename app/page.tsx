@@ -5,6 +5,8 @@ import { SetAssistant, useLocalStorage } from "./hooks/useLocalStorage";
 import { Assistant } from "openai/resources/beta/assistants/assistants.mjs";
 import { Thread } from "openai/resources/beta/threads/threads.mjs";
 import { Run } from "openai/resources/beta/threads/runs/runs.mjs";
+import { createAssistant, getMessages, postMessage } from "./utils/openAi";
+import { ThreadMessagesPage } from "openai/resources/beta/threads/messages/messages.mjs";
 export interface ChatGPTMessage {
   role: "assistant" | "user";
   content: string;
@@ -64,7 +66,7 @@ export default function Home() {
     let interval: NodeJS.Timeout;
 
     const checkRun = async () => {
-      if (runState.name === "running") {
+      if (runState.name === "running" && assistant) {
         console.log("Checking run");
         const response = await fetch("/api/check-run", {
           method: "POST",
@@ -83,9 +85,28 @@ export default function Home() {
           setTimeout(() => setError(""), 1000);
         } else {
           const run: Run = await response.json();
+          console.log(run.status);
           if (run.status === "completed") {
             console.log("Run completed");
             setRunState({ name: "ready" });
+            const updatedMessages = await getMessages(run.thread_id);
+            const content = updatedMessages[0].content[0];
+
+            if ("text" in content) {
+              const aiResponse = content.text.value;
+              setMessages([
+                ...messages,
+                { role: "assistant", content: aiResponse },
+              ]);
+            } else {
+              console.log(
+                "Error getting text value from response, it may have returned an image"
+              );
+            }
+          }
+          if (run.status === "requires_action") {
+            console.log("call function");
+            setRunState({ name: "error" });
           }
         }
       } else {
@@ -98,7 +119,7 @@ export default function Home() {
     return () => {
       clearInterval(interval);
     };
-  }, [assistant?.thread, runState]);
+  }, [assistant, runState]);
 
   return (
     <div className="flex flex-col h-screen w-screen items-center justify-between gap-4 p-3">
@@ -162,64 +183,3 @@ const resetAssistant = (
   setAssistant(null);
   setMessages([]);
 };
-
-async function postMessage({
-  updatedMessages,
-  currentAssistant,
-  setError,
-  setRunState,
-}: {
-  updatedMessages: ChatGPTMessage[];
-  currentAssistant: { assistant: Assistant; thread: Thread };
-  setError: React.Dispatch<React.SetStateAction<string | null>>;
-  setRunState: React.Dispatch<React.SetStateAction<RunStates>>;
-}) {
-  const userMessages = updatedMessages.filter(
-    (message) => message.role === "user"
-  );
-  const latestUserMessage = userMessages[userMessages.length - 1];
-  const response = await fetch("/api/message", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      userMessage: latestUserMessage,
-      assistant: {
-        assistant: currentAssistant.assistant,
-        thread: currentAssistant.thread,
-      },
-    }),
-  });
-
-  if (response.status !== 200) {
-    const data = await response.json();
-    setError("Error getting response: " + data.statusText);
-    setTimeout(() => setError(""), 500);
-  } else {
-    const run = await response.json();
-    setRunState({ name: "running", run });
-  }
-}
-
-async function createAssistant({
-  setAssistant,
-}: {
-  setAssistant: SetAssistant<{ assistant: Assistant; thread: Thread } | null>;
-}) {
-  const response = await fetch("/api/create-assistant", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: "",
-  });
-
-  if (response.status === 200) {
-    const data = await response.json();
-    setAssistant({ assistant: data.assistant, thread: data.thread });
-    return { assistant: data.assistant, thread: data.thread };
-  } else {
-    throw new Error("Failed to create assistant");
-  }
-}

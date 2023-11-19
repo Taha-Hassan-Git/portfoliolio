@@ -16,20 +16,21 @@ const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY ?? "" });
 
 export const POST = async (req: Request): Promise<Response> => {
   const payload: MessageRequestPayload = await req.json();
-  const response = await interviewAgent(payload);
+  const response = await postMessage(payload);
   return new Response(JSON.stringify(response));
 };
 
-export const interviewAgent = async (
+const postMessage = async (
   payload: MessageRequestPayload
 ): Promise<OpenAI.Beta.Threads.Runs.Run> => {
   const {
     userMessage,
     assistant: { assistant, thread },
   } = payload;
+
   await openai.beta.threads.messages.create(thread.id, {
     role: "user",
-    content: `${userMessage}`,
+    content: `${userMessage.content}`,
   });
   const run = await openai.beta.threads.runs.create(thread.id, {
     assistant_id: assistant.id,
