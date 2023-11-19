@@ -1,11 +1,10 @@
 import OpenAI from "openai";
 import { Assistant } from "openai/resources/beta/assistants/assistants.mjs";
-import { ThreadMessagesPage } from "openai/resources/beta/threads/messages/messages.mjs";
 import { Thread } from "openai/resources/beta/threads/threads.mjs";
 import { ChatGPTMessage } from "../../page";
 
 interface MessageRequestPayload {
-  messages: ChatGPTMessage[];
+  userMessage: ChatGPTMessage;
   assistant: { assistant: Assistant; thread: Thread };
 }
 
@@ -23,21 +22,17 @@ export const POST = async (req: Request): Promise<Response> => {
 
 export const interviewAgent = async (
   payload: MessageRequestPayload
-): Promise<ThreadMessagesPage> => {
+): Promise<OpenAI.Beta.Threads.Runs.Run> => {
   const {
-    messages,
+    userMessage,
     assistant: { assistant, thread },
   } = payload;
-
-  const message = await openai.beta.threads.messages.create(thread.id, {
+  await openai.beta.threads.messages.create(thread.id, {
     role: "user",
-    content: `${messages[messages.length - 1]}`,
+    content: `${userMessage}`,
   });
-  console.log({ message });
   const run = await openai.beta.threads.runs.create(thread.id, {
     assistant_id: assistant.id,
   });
-
-  const newMessages = await openai.beta.threads.messages.list(thread.id);
-  return newMessages;
+  return run;
 };
