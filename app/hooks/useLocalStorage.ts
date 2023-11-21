@@ -1,6 +1,6 @@
 import { useState, useLayoutEffect, useCallback } from "react";
 
-export type SetAssistant<T> = (setter: T | ((value: T) => T)) => void;
+export type LocalStorageSetter<T> = (setter: T | ((value: T) => T)) => void;
 
 export function useLocalStorage<T = any>(key: string, defaultValue: T) {
   const [state, setState] = useState(defaultValue);

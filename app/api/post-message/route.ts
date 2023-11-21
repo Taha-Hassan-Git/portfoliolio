@@ -5,7 +5,7 @@ import { ChatGPTMessage } from "../../page";
 
 interface MessageRequestPayload {
   userMessage: ChatGPTMessage;
-  assistant: { assistant: Assistant; thread: Thread };
+  assistant: { assistant: string; thread: string };
 }
 
 if (!process.env.OPENAI_API_KEY) {
@@ -28,12 +28,12 @@ const postMessage = async (
     assistant: { assistant, thread },
   } = payload;
 
-  await openai.beta.threads.messages.create(thread.id, {
+  await openai.beta.threads.messages.create(thread, {
     role: "user",
     content: `${userMessage.content}`,
   });
-  const run = await openai.beta.threads.runs.create(thread.id, {
-    assistant_id: assistant.id,
+  const run = await openai.beta.threads.runs.create(thread, {
+    assistant_id: assistant,
   });
   return run;
 };

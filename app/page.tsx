@@ -1,12 +1,11 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { SetAssistant, useLocalStorage } from "./hooks/useLocalStorage";
+import { SetStateAction, useEffect, useState } from "react";
+import { LocalStorageSetter, useLocalStorage } from "./hooks/useLocalStorage";
 import { Assistant } from "openai/resources/beta/assistants/assistants.mjs";
 import { Thread } from "openai/resources/beta/threads/threads.mjs";
 import { Run } from "openai/resources/beta/threads/runs/runs.mjs";
-import { createAssistant, getMessages, postMessage } from "./utils/openAi";
-import { ThreadMessagesPage } from "openai/resources/beta/threads/messages/messages.mjs";
+import { createThread, getMessages, postMessage } from "./utils/openAi";
 export interface ChatGPTMessage {
   role: "assistant" | "user";
   content: string;
@@ -25,10 +24,11 @@ export default function Home() {
     "messages",
     []
   );
-  const [assistant, setAssistant] = useLocalStorage<{
-    assistant: Assistant;
-    thread: Thread;
-  } | null>("assistant", null);
+  const [thread, setThread] = useLocalStorage<Thread | null>("thread", null);
+
+  const assistantsArr = [
+    { name: "skeleton", id: "asst_agngaCYdyNVFaIBOni99qbfA" },
+  ];
 
   const onSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -42,16 +42,21 @@ export default function Home() {
     setInputContent("");
 
     try {
-      let currentAssistant = assistant;
+      let skeletonThread = thread;
 
-      if (!currentAssistant) {
-        currentAssistant = await createAssistant({ setAssistant });
+      const skeletonAssistant = assistantsArr.find(
+        (assistant) => assistant.name === "skeleton"
+      );
+
+      if (skeletonThread === null) {
+        skeletonThread = await createThread();
+        setThread(skeletonThread);
       }
-
-      if (currentAssistant) {
+      if (skeletonThread) {
         await postMessage({
           updatedMessages,
-          currentAssistant,
+          skeletonAssistantId: skeletonAssistant?.id as string,
+          skeletonThreadId: skeletonThread.id,
           setError,
           setRunState,
         });
@@ -64,9 +69,9 @@ export default function Home() {
 
   useEffect(() => {
     let interval: NodeJS.Timeout;
-
     const checkRun = async () => {
-      if (runState.name === "running" && assistant) {
+      if (runState.name === "running" && thread) {
+        console.log("hi");
         console.log("Checking run");
         const response = await fetch("/api/check-run", {
           method: "POST",
@@ -74,7 +79,7 @@ export default function Home() {
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
-            thread: assistant?.thread,
+            thread: thread,
             run: runState.run,
           }),
         });
@@ -90,6 +95,7 @@ export default function Home() {
             console.log("Run completed");
             setRunState({ name: "ready" });
             const updatedMessages = await getMessages(run.thread_id);
+            console.log(updatedMessages);
             const content = updatedMessages[0].content[0];
 
             if ("text" in content) {
@@ -119,16 +125,16 @@ export default function Home() {
     return () => {
       clearInterval(interval);
     };
-  }, [assistant, runState]);
+  }, [messages, runState, setMessages]);
 
   return (
     <div className="flex flex-col h-screen w-screen items-center justify-between gap-4 p-3">
       <div className="flex flex-col items-start p-4 gap-4 overflow-scroll">
         <button
-          onClick={() => resetAssistant(setAssistant, setMessages)}
+          onClick={() => resetThread(setThread, setMessages)}
           className="self-start text-gray-800 text-sm rounded px-1 border bg-slate-100"
         >
-          {assistant ? "Reset" : "No Assistant"}
+          {thread ? "Reset" : "No thread"}
         </button>
         <h1 className="p-10 text-xl self-center">
           Let&apos;s get some info for your Skeleton
@@ -176,10 +182,10 @@ const AssistantMessage = ({ content }: { content: string }) => (
   </div>
 );
 
-const resetAssistant = (
-  setAssistant: SetAssistant<{ assistant: Assistant; thread: Thread } | null>,
-  setMessages: React.Dispatch<React.SetStateAction<ChatGPTMessage[]>>
+const resetThread = (
+  setThread: LocalStorageSetter<Thread | null>,
+  setMessages: React.Dispatch<SetStateAction<ChatGPTMessage[]>>
 ) => {
-  setAssistant(null);
+  setThread(null);
   setMessages([]);
 };

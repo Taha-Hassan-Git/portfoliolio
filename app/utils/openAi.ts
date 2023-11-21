@@ -1,23 +1,25 @@
 import { Assistant } from "openai/resources/beta/assistants/assistants.mjs";
 import { Thread } from "openai/resources/beta/threads/threads.mjs";
-import { SetAssistant } from "../hooks/useLocalStorage";
 import { ChatGPTMessage, RunStates } from "../page";
 import { ThreadMessage } from "openai/resources/beta/threads/messages/messages.mjs";
 
 export async function postMessage({
   updatedMessages,
-  currentAssistant,
+  skeletonAssistantId,
+  skeletonThreadId,
   setError,
   setRunState,
 }: {
   updatedMessages: ChatGPTMessage[];
-  currentAssistant: { assistant: Assistant; thread: Thread };
+  skeletonAssistantId: string;
+  skeletonThreadId: string;
   setError: React.Dispatch<React.SetStateAction<string | null>>;
   setRunState: React.Dispatch<React.SetStateAction<RunStates>>;
 }) {
   const userMessages = updatedMessages.filter(
     (message) => message.role === "user"
   );
+
   const latestUserMessage = userMessages[userMessages.length - 1];
   const response = await fetch("/api/post-message", {
     method: "POST",
@@ -27,8 +29,8 @@ export async function postMessage({
     body: JSON.stringify({
       userMessage: latestUserMessage,
       assistant: {
-        assistant: currentAssistant.assistant,
-        thread: currentAssistant.thread,
+        assistant: skeletonAssistantId,
+        thread: skeletonThreadId,
       },
     }),
   });
@@ -43,12 +45,8 @@ export async function postMessage({
   }
 }
 
-export async function createAssistant({
-  setAssistant,
-}: {
-  setAssistant: SetAssistant<{ assistant: Assistant; thread: Thread } | null>;
-}) {
-  const response = await fetch("/api/create-assistant", {
+export async function createThread() {
+  const response = await fetch("/api/create-thread", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -58,8 +56,8 @@ export async function createAssistant({
 
   if (response.status === 200) {
     const data = await response.json();
-    setAssistant({ assistant: data.assistant, thread: data.thread });
-    return { assistant: data.assistant, thread: data.thread };
+
+    return data;
   } else {
     throw new Error("Failed to create assistant");
   }
