@@ -1,6 +1,4 @@
 import OpenAI from "openai";
-import { Assistant } from "openai/resources/beta/assistants/assistants.mjs";
-import { Thread } from "openai/resources/beta/threads/threads.mjs";
 import { ChatGPTMessage } from "../../page";
 
 interface MessageRequestPayload {

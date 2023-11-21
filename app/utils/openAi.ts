@@ -1,5 +1,3 @@
-import { Assistant } from "openai/resources/beta/assistants/assistants.mjs";
-import { Thread } from "openai/resources/beta/threads/threads.mjs";
 import { ChatGPTMessage, RunStates } from "../page";
 import { ThreadMessage } from "openai/resources/beta/threads/messages/messages.mjs";
 

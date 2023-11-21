@@ -2,7 +2,6 @@
 
 import { SetStateAction, useEffect, useState } from "react";
 import { LocalStorageSetter, useLocalStorage } from "./hooks/useLocalStorage";
-import { Assistant } from "openai/resources/beta/assistants/assistants.mjs";
 import { Thread } from "openai/resources/beta/threads/threads.mjs";
 import { Run } from "openai/resources/beta/threads/runs/runs.mjs";
 import { createThread, getMessages, postMessage } from "./utils/openAi";
