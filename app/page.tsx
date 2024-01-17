@@ -70,8 +70,6 @@ export default function Home() {
     let interval: NodeJS.Timeout;
     const checkRun = async () => {
       if (runState.name === "running" && thread) {
-        console.log("hi");
-        console.log("Checking run");
         const response = await fetch("/api/check-run", {
           method: "POST",
           headers: {
@@ -89,9 +87,7 @@ export default function Home() {
           setTimeout(() => setError(""), 1000);
         } else {
           const run: Run = await response.json();
-          console.log(run.status);
           if (run.status === "completed") {
-            console.log("Run completed");
             setRunState({ name: "ready" });
             const updatedMessages = await getMessages(run.thread_id);
             console.log(updatedMessages);
@@ -144,7 +140,7 @@ export default function Home() {
           </div>
         )}
 
-        <Messages messages={messages} />
+        <Messages messages={messages} runState={runState} />
       </div>
       <form
         className="flex flex-col w-full p-10 gap-4 items-center justify-center"
