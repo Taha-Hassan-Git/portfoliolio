@@ -1,10 +1,10 @@
 "use client";
-
 import { SetStateAction, useEffect, useState } from "react";
 import { LocalStorageSetter, useLocalStorage } from "./hooks/useLocalStorage";
 import { Thread } from "openai/resources/beta/threads/threads.mjs";
 import { Run } from "openai/resources/beta/threads/runs/runs.mjs";
 import { createThread, getMessages, postMessage } from "./utils/openAi";
+import { Messages } from "./components/Messages";
 export interface ChatGPTMessage {
   role: "assistant" | "user";
   content: string;
@@ -127,24 +127,24 @@ export default function Home() {
   }, [messages, runState, setMessages]);
 
   return (
-    <div className="flex flex-col h-screen w-screen items-center justify-between gap-4 p-3">
-      <div className="flex flex-col items-start p-4 gap-4 overflow-scroll">
+    <div className="flex flex-col h-screen w-full items-center justify-between gap-4 p-3 bg-gray-50">
+      <div className="flex flex-col items-start p-3 gap-3 overflow-scroll w-full ">
         <button
           onClick={() => resetThread(setThread, setMessages)}
-          className="self-start text-gray-800 text-sm rounded px-1 border bg-slate-100"
+          className="text-sm rounded py-1 px-2 border border-gray-300 bg-gray-100"
         >
           {thread ? "Reset" : "No thread"}
         </button>
-        <h1 className="p-10 text-xl self-center">
-          Let&apos;s get some info for your Skeleton
-        </h1>
-        {messages.map((message, index) =>
-          message.role === "user" ? (
-            <UserMessage key={index} content={message.content} />
-          ) : (
-            <AssistantMessage key={index} content={message.content} />
-          )
+        {!thread && (
+          <div className="self-center flex flex-col items-center">
+            <h1 className="text-lg">
+              Let&apos;s get some info for your Skeleton.
+            </h1>
+            <p>Say hi to begin chatting.</p>
+          </div>
         )}
+
+        <Messages messages={messages} />
       </div>
       <form
         className="flex flex-col w-full p-10 gap-4 items-center justify-center"
@@ -153,13 +153,13 @@ export default function Home() {
         <textarea
           value={inputContent}
           onChange={(e) => setInputContent(e.target.value)}
-          className="text-gray-50 text-lg w-full h-fit min-h-[150px] bg-gray-500 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500"
+          className="text-lg w-full h-fit min-h-[150px] rounded-lg border border-gray-500 p-2"
         />
         {error && <p>{error}</p>}
         <button
           // Only allow the user to submit messages when a run is complete
           disabled={runState.name !== "ready"}
-          className="bg-blue-900 p-2 rounded-lg self-end"
+          className="p-2 rounded-lg self-end border bg-blue-600 text-white"
           type="submit"
         >
           SUBMIT
@@ -168,18 +168,6 @@ export default function Home() {
     </div>
   );
 }
-
-const UserMessage = ({ content }: { content: string }) => (
-  <div className="p-4 rounded-xl border shadow-sm border-gray-800 bg-slate-600 self-end max-w-[75%]">
-    <p className="text-white">{content}</p>
-  </div>
-);
-
-const AssistantMessage = ({ content }: { content: string }) => (
-  <div className="p-4 rounded-xl border shadow-sm border-gray bg-slate-900 self-baseline max-w-[75%]">
-    <p className="text-green-400 font-mono">{content}</p>
-  </div>
-);
 
 const resetThread = (
   setThread: LocalStorageSetter<Thread | null>,
