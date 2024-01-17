@@ -9,7 +9,7 @@ export function Messages({
   runState: RunStates;
 }) {
   return (
-    <div className="w-full flex flex-col text-lg">
+    <div className="w-full flex flex-col gap-4 text-lg">
       {messages.map((message, index) =>
         message.role === "user" ? (
           <UserMessage key={index} content={message.content} />
@@ -23,13 +23,13 @@ export function Messages({
 }
 
 const UserMessage = ({ content }: { content: string }) => (
-  <div className="p-4 rounded-xl border shadow-sm self-end max-w-[400px] bg-cyan-50">
+  <div className="p-4 rounded-xl border shadow-sm self-end max-w-[700px] bg-cyan-50">
     <p className="">{content}</p>
   </div>
 );
 
 const AssistantMessage = ({ content }: { content: string }) => (
-  <div className="p-4 rounded-xl border shadow-sm border-gray self-baseline max-w-[400px] bg-yellow-50">
+  <div className="p-4 rounded-xl border shadow-sm border-gray self-baseline max-w-[700px] bg-yellow-50">
     <p>{content}</p>
   </div>
 );

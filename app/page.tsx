@@ -123,7 +123,7 @@ export default function Home() {
   }, [messages, runState, setMessages]);
 
   return (
-    <div className="flex flex-col h-screen w-full items-center justify-between gap-4 p-3 bg-gray-50">
+    <div className="flex flex-col h-screen w-full items-center justify-between bg-gray-50">
       <div className="flex flex-col items-start p-3 gap-3 overflow-scroll w-full ">
         <button
           onClick={() => resetThread(setThread, setMessages)}
@@ -143,7 +143,7 @@ export default function Home() {
         <Messages messages={messages} runState={runState} />
       </div>
       <form
-        className="flex flex-col w-full p-10 gap-4 items-center justify-center"
+        className="flex flex-col w-full p-6 gap-4 items-center justify-center border-t-2"
         onSubmit={onSubmit}
       >
         <textarea
