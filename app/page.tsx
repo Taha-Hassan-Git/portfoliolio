@@ -26,7 +26,7 @@ export default function Home() {
   const [thread, setThread] = useLocalStorage<Thread | null>("thread", null);
 
   const assistantsArr = [
-    { name: "skeleton", id: "asst_agngaCYdyNVFaIBOni99qbfA" },
+    { name: "skeleton", id: "asst_3aXwBiUZFqzcoSLUdGeFLGiG" },
   ];
 
   const onSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
