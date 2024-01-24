@@ -2,6 +2,7 @@ import { Sidebar } from "./_components/Sidebar";
 import type { Metadata } from "next";
 import { Poppins } from "next/font/google";
 import "./globals.css";
+import { PortfolioProvider } from "./_store/store";
 
 const poppins = Poppins({ weight: "400", subsets: ["latin"] });
 
@@ -18,10 +19,12 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={poppins.className}>
-        <div className="flex h-screen w-screen">
-          <Sidebar />
-          {children}
-        </div>
+        <PortfolioProvider>
+          <div className="flex h-screen w-screen">
+            <Sidebar />
+            {children}
+          </div>
+        </PortfolioProvider>
       </body>
     </html>
   );

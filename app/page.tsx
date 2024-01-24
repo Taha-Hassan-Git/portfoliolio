@@ -1,10 +1,14 @@
 "use client";
 import { SetStateAction, useEffect, useState } from "react";
-import { LocalStorageSetter, useLocalStorage } from "./hooks/useLocalStorage";
+import {
+  LocalStorageSetter,
+  useLocalStorage,
+} from "./_hooks/useLocalStorageState";
 import { Thread } from "openai/resources/beta/threads/threads.mjs";
 import { Run } from "openai/resources/beta/threads/runs/runs.mjs";
 import { createThread, getMessages, postMessage } from "./utils/openAi";
 import { Messages } from "./_components/Messages";
+import { usePortfolioDispatch } from "./_store/store";
 export interface ChatGPTMessage {
   role: "assistant" | "user";
   content: string;
@@ -16,6 +20,7 @@ export type RunStates =
   | { name: "error" };
 
 export default function Home() {
+  const dispatch = usePortfolioDispatch();
   const [inputContent, setInputContent] = useState<string>("");
   const [error, setError] = useState<string | null>(null);
   const [runState, setRunState] = useState<RunStates>({ name: "ready" });
@@ -99,6 +104,7 @@ export default function Home() {
                 ...messages,
                 { role: "assistant", content: aiResponse },
               ]);
+              checkProject(aiResponse, dispatch);
             } else {
               console.log(
                 "Error getting text value from response, it may have returned an image"
@@ -120,7 +126,7 @@ export default function Home() {
     return () => {
       clearInterval(interval);
     };
-  }, [messages, runState, setMessages]);
+  }, [dispatch, messages, runState, setMessages, thread]);
 
   return (
     <div className="flex flex-col h-screen w-full items-center justify-between bg-gray-50">
@@ -171,4 +177,28 @@ const resetThread = (
 ) => {
   setThread(null);
   setMessages([]);
+};
+
+const checkProject = (aiResponse: string, dispatch: any) => {
+  console.log("checkProject");
+  //check if the message has triple quotes """message"""
+  const tripleQuoteRegex = /"""(.*?)"""/;
+  const tripleQuoteMatches = aiResponse.match(tripleQuoteRegex);
+  if (tripleQuoteMatches) {
+    console.log("contains triple brackets");
+    //get the text inside the triple brackets
+    const tripleQuoteText = tripleQuoteMatches[0].replace(
+      tripleQuoteRegex,
+      "$1"
+    );
+    //check if the text is a valid object
+    const tripleQuoteObject = JSON.parse(tripleQuoteText);
+    // if it is, dispatch the action
+    if (tripleQuoteObject) {
+      dispatch({
+        type: "SET_PORTFOLIO",
+        payload: tripleQuoteObject.payload,
+      });
+    }
+  }
 };
