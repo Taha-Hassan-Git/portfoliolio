@@ -3,9 +3,8 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import React from "react";
-export function Sidebar({}) {
-  // have a white background on the Links that are active
 
+export function Sidebar({}) {
   const pathname = usePathname();
   const activeLink = (href: string) => {
     return pathname === href
@@ -13,7 +12,7 @@ export function Sidebar({}) {
       : "bg-gray-200 shadow-sm mx-2 border";
   };
   return (
-    <div className="w-[400px] h-screen bg-gray-100 flex flex-col gap-3 py-4">
+    <div className="w-[300px] h-screen bg-gray-100 flex flex-col gap-3 py-4">
       <Link className={"p-4 " + activeLink("/")} href="/">
         🤔 Plan
       </Link>

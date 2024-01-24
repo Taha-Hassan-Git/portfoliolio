@@ -8,7 +8,7 @@ import { Thread } from "openai/resources/beta/threads/threads.mjs";
 import { Run } from "openai/resources/beta/threads/runs/runs.mjs";
 import { createThread, getMessages, postMessage } from "./utils/openAi";
 import { Messages } from "./_components/Messages";
-import { usePortfolioDispatch } from "./_store/store";
+import { exampleSections, usePortfolioDispatch } from "./_store/store";
 export interface ChatGPTMessage {
   role: "assistant" | "user";
   content: string;
@@ -180,7 +180,10 @@ const resetThread = (
 };
 
 const checkProject = (aiResponse: string, dispatch: any) => {
-  console.log("checkProject");
+  dispatch({
+    type: "SET_PORTFOLIO",
+    payload: { id: 0, sections: exampleSections },
+  });
   //check if the message has triple quotes """message"""
   const tripleQuoteRegex = /"""(.*?)"""/;
   const tripleQuoteMatches = aiResponse.match(tripleQuoteRegex);
@@ -197,7 +200,7 @@ const checkProject = (aiResponse: string, dispatch: any) => {
     if (tripleQuoteObject) {
       dispatch({
         type: "SET_PORTFOLIO",
-        payload: tripleQuoteObject.payload,
+        payload: { id: 0, sections: exampleSections },
       });
     }
   }
