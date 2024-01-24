@@ -4,7 +4,7 @@ import { LocalStorageSetter, useLocalStorage } from "./hooks/useLocalStorage";
 import { Thread } from "openai/resources/beta/threads/threads.mjs";
 import { Run } from "openai/resources/beta/threads/runs/runs.mjs";
 import { createThread, getMessages, postMessage } from "./utils/openAi";
-import { Messages } from "./components/Messages";
+import { Messages } from "./_components/Messages";
 export interface ChatGPTMessage {
   role: "assistant" | "user";
   content: string;
