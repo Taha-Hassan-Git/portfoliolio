@@ -15,14 +15,14 @@ export const SectionMenu = () => {
   }
 
   return (
-    <div className="flex flex-col self-start h-full w-[300px] items-baseline gap-4 bg-gray-50">
+    <div className="flex flex-col self-start h-full w-[400px] border-l shadow-sm items-baseline gap-4 bg-gray-100">
       <Accordion.Root
         defaultValue={[sectionTitle]}
         type="multiple"
         className="w-full"
       >
         {portfolio.sections.length > 0 && (
-          <div className="flex flex-col gap-1 items-baseline bg-gray-50">
+          <div className="flex flex-col gap-1 items-baseline">
             {portfolio.sections.map((section) => (
               <Accordion.Item
                 key={section.title}

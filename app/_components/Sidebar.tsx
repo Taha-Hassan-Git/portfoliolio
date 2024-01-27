@@ -16,7 +16,7 @@ export function Sidebar({}) {
   };
 
   return (
-    <div className="w-[300px] h-screen bg-gray-100 flex flex-col gap-3 py-4">
+    <div className="w-[300px] h-screen bg-gray-100 flex flex-col border-r shadow-sm gap-3 py-4">
       <Link className={"p-4 " + activeLink("/")} href="/">
         🤔 Plan
       </Link>

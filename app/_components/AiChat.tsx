@@ -12,6 +12,7 @@ export function AiChat({
   inputContent,
   setInputContent,
   error,
+  headingCopy,
 }: {
   thread: Thread | null;
   messages: ChatGPTMessage[];
@@ -21,6 +22,7 @@ export function AiChat({
   inputContent: string;
   setInputContent: React.Dispatch<React.SetStateAction<string>>;
   error: string | null;
+  headingCopy: string;
 }) {
   return (
     <>
@@ -29,6 +31,7 @@ export function AiChat({
         messages={messages}
         runState={runState}
         resetThread={resetThread}
+        headingCopy={headingCopy}
       />
       <ChatForm
         runState={runState}

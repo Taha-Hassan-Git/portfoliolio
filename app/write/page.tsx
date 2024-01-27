@@ -2,8 +2,10 @@
 
 const WritePage = () => {
   return (
-    <div className="flex flex-col h-screen w-full items-center justify-between bg-gray-50">
-      <h1>Choose a section to begin working on your portfolio</h1>
+    <div className="flex flex-col grow items-center justify-center bg-gray-50">
+      <h1 className="text-xl font-bold">
+        Choose a section to begin working on your portfolio
+      </h1>
     </div>
   );
 };

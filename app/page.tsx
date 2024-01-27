@@ -1,4 +1,5 @@
 "use client";
+import { PlanMenu } from "./_components/PlanMenu";
 import { AiChat } from "./_components/AiChat";
 import { useEffect } from "react";
 import { exampleSections, usePortfolioDispatch } from "./_store/store";
@@ -49,17 +50,21 @@ export default function Home() {
   }, [dispatch, messages]);
 
   return (
-    <div className="flex flex-col h-full w-full items-center justify-between bg-gray-50">
-      <AiChat
-        thread={thread}
-        messages={messages}
-        runState={runState}
-        resetThread={resetThread}
-        onSubmit={onSubmit}
-        inputContent={inputContent}
-        setInputContent={setInputContent}
-        error={error}
-      />
-    </div>
+    <>
+      <div className="flex flex-col h-full grow items-center justify-between bg-gray-50">
+        <AiChat
+          thread={thread}
+          messages={messages}
+          runState={runState}
+          resetThread={resetThread}
+          onSubmit={onSubmit}
+          inputContent={inputContent}
+          setInputContent={setInputContent}
+          error={error}
+          headingCopy="Let's get started on your plan."
+        />
+      </div>
+      <PlanMenu />
+    </>
   );
 }

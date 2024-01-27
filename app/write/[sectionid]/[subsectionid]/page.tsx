@@ -19,7 +19,7 @@ const SectionPage = () => {
   } = useAgent("skeleton", "write:" + subSectionTitle);
 
   return (
-    <div className="flex flex-col h-screen w-full items-center justify-between bg-gray-50">
+    <div className="flex flex-col h-full grow items-center justify-between bg-gray-50">
       <AiChat
         thread={thread}
         messages={messages}
@@ -29,6 +29,7 @@ const SectionPage = () => {
         inputContent={inputContent}
         setInputContent={setInputContent}
         error={error}
+        headingCopy="Let's get some info for this section."
       />
     </div>
   );

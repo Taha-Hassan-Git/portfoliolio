@@ -1,5 +1,5 @@
-import { ChatGPTMessage, RunStates } from "../page";
 import { ThreadMessage } from "openai/resources/beta/threads/messages/messages.mjs";
+import { ChatGPTMessage, RunStates } from "../_hooks/useAgent";
 
 export async function postMessage({
   updatedMessages,

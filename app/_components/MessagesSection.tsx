@@ -7,11 +7,13 @@ export function MessagesSection({
   resetThread,
   messages,
   runState,
+  headingCopy,
 }: {
   thread: Thread | null;
   resetThread: () => void;
   messages: ChatGPTMessage[];
   runState: RunStates;
+  headingCopy: string;
 }) {
   return (
     <div className="flex flex-col items-start p-3 gap-3 overflow-scroll w-full ">
@@ -23,9 +25,7 @@ export function MessagesSection({
       </button>
       {!thread && (
         <div className="self-center flex flex-col items-center">
-          <h1 className="text-lg">
-            Let&apos;s get some info for your Skeleton.
-          </h1>
+          <h1 className="text-lg">{headingCopy}</h1>
           <p>Say hi to begin chatting.</p>
         </div>
       )}
