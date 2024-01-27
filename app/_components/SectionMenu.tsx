@@ -11,12 +11,16 @@ export const SectionMenu = () => {
 
   let sectionTitle = pathname.split("/")[2];
   if (sectionTitle) {
-    sectionTitle = sectionTitle.replace(/%20/g, " ");
+    sectionTitle = sectionTitle.replaceAll(/%20/g, " ");
   }
 
   return (
     <div className="flex flex-col self-start h-full w-[300px] items-baseline gap-4 bg-gray-50">
-      <Accordion.Root type="multiple" className="w-full">
+      <Accordion.Root
+        defaultValue={[sectionTitle]}
+        type="multiple"
+        className="w-full"
+      >
         {portfolio.sections.length > 0 && (
           <div className="flex flex-col gap-1 items-baseline bg-gray-50">
             {portfolio.sections.map((section) => (
@@ -65,14 +69,15 @@ function SubsectionLink({
   const pathname = usePathname();
 
   const isActive =
-    pathname === `/write/${section.title + "/" + subsection.title}`;
+    pathname.replaceAll(/%20/g, " ") ===
+    `/write/${section.title + "/" + subsection.title}`;
 
   return (
     <a
       href={`/write/${section.title + "/" + subsection.title}`}
       className={
-        "font-bold w-[250px] border-black border-2 p-2 hover:bg-gray-100 [box-shadow:3px_3px_#b6b6b6]" +
-        (isActive ? " bg-black text-white hover:bg-black" : "")
+        "font-bold w-[250px] border-black border-2 p-2 [box-shadow:3px_3px_#b6b6b6]" +
+        (isActive ? " bg-black text-white" : " hover:bg-gray-100")
       }
     >
       <div className="text-left overflow-hidden whitespace-nowrap text-overflow-ellipsis">
