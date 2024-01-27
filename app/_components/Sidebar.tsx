@@ -7,10 +7,14 @@ import React from "react";
 export function Sidebar({}) {
   const pathname = usePathname();
   const activeLink = (href: string) => {
-    return pathname === href
-      ? "bg-gray-50 shadow-md ml-2 border-r-0"
-      : "bg-gray-200 shadow-sm mx-2 border";
+    const activeStyle = "bg-gray-50 shadow-md ml-2 border-r-0";
+    const inactiveStyle = "bg-gray-200 shadow-sm mx-2 border";
+
+    if (href === "/" && pathname === "/") return activeStyle;
+    else if (href !== "/" && pathname.startsWith(href)) return activeStyle;
+    else return inactiveStyle;
   };
+
   return (
     <div className="w-[300px] h-screen bg-gray-100 flex flex-col gap-3 py-4">
       <Link className={"p-4 " + activeLink("/")} href="/">

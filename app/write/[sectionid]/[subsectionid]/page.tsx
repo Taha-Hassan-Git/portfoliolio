@@ -1,10 +1,9 @@
 "use client";
 
-import error from "next/error";
-import { Messages } from "../_components/Messages";
-import { useAgent } from "../_hooks/useAgent";
+import { Messages } from "../../../_components/Messages";
+import { useAgent } from "../../../_hooks/useAgent";
 
-const WritePage = () => {
+const SectionPage = () => {
   const {
     thread,
     messages,
@@ -59,4 +58,4 @@ const WritePage = () => {
   );
 };
 
-export default WritePage;
+export default SectionPage;

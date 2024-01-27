@@ -6,7 +6,7 @@ export default function WriteLayout({
   children: React.ReactNode;
 }) {
   return (
-    <div className="flex w-full items-center justify-between overflow-scroll bg-gray-50">
+    <div className="flex w-full items-center justify-between overflow-scroll bg-gray-100">
       <SectionMenu />
       {children}
     </div>
