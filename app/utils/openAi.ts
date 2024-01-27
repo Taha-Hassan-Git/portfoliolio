@@ -3,14 +3,14 @@ import { ThreadMessage } from "openai/resources/beta/threads/messages/messages.m
 
 export async function postMessage({
   updatedMessages,
-  skeletonAssistantId,
-  skeletonThreadId,
+  currentAssistantId,
+  currentThreadId,
   setError,
   setRunState,
 }: {
   updatedMessages: ChatGPTMessage[];
-  skeletonAssistantId: string;
-  skeletonThreadId: string;
+  currentAssistantId: string;
+  currentThreadId: string;
   setError: React.Dispatch<React.SetStateAction<string | null>>;
   setRunState: React.Dispatch<React.SetStateAction<RunStates>>;
 }) {
@@ -27,8 +27,8 @@ export async function postMessage({
     body: JSON.stringify({
       userMessage: latestUserMessage,
       assistant: {
-        assistant: skeletonAssistantId,
-        thread: skeletonThreadId,
+        assistant: currentAssistantId,
+        thread: currentThreadId,
       },
     }),
   });

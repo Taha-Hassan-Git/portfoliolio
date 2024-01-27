@@ -2,20 +2,23 @@ import { Thread } from "openai/resources/beta/index.mjs";
 import { Run } from "openai/resources/beta/threads/index.mjs";
 import { useState, useEffect, SetStateAction } from "react";
 import { RunStates, ChatGPTMessage } from "../page";
-import { createThread, getMessages } from "../utils/openAi";
+import { createThread, getMessages, postMessage } from "../utils/openAi";
 import { LocalStorageSetter, useLocalStorage } from "./useLocalStorageState";
 import { exampleSections, usePortfolioDispatch } from "../_store/store";
 
-export function useAgent(agent: "skeleton") {
+export function useAgent(agent: "skeleton", key: string) {
   const dispatch = usePortfolioDispatch();
   const [inputContent, setInputContent] = useState<string>("");
   const [error, setError] = useState<string | null>(null);
   const [runState, setRunState] = useState<RunStates>({ name: "ready" });
   const [messages, setMessages] = useLocalStorage<ChatGPTMessage[]>(
-    "messages",
+    key + "messages",
     []
   );
-  const [thread, setThread] = useLocalStorage<Thread | null>("thread", null);
+  const [thread, setThread] = useLocalStorage<Thread | null>(
+    key + "thread",
+    null
+  );
 
   const assistantsArr = [
     { name: "skeleton", id: "asst_3aXwBiUZFqzcoSLUdGeFLGiG" },
@@ -91,7 +94,6 @@ export function useAgent(agent: "skeleton") {
                 ...messages,
                 { role: "assistant", content: aiResponse },
               ]);
-              checkProject(aiResponse, dispatch);
             } else {
               console.log(
                 "Error getting text value from response, it may have returned an image"
@@ -131,30 +133,3 @@ export function useAgent(agent: "skeleton") {
     error,
   };
 }
-
-const checkProject = (aiResponse: string, dispatch: any) => {
-  dispatch({
-    type: "SET_PORTFOLIO",
-    payload: { id: 0, sections: exampleSections },
-  });
-  //check if the message has triple quotes """message"""
-  const tripleQuoteRegex = /"""(.*?)"""/;
-  const tripleQuoteMatches = aiResponse.match(tripleQuoteRegex);
-  if (tripleQuoteMatches) {
-    console.log("contains triple brackets");
-    //get the text inside the triple brackets
-    const tripleQuoteText = tripleQuoteMatches[0].replace(
-      tripleQuoteRegex,
-      "$1"
-    );
-    //check if the text is a valid object
-    const tripleQuoteObject = JSON.parse(tripleQuoteText);
-    // if it is, dispatch the action
-    if (tripleQuoteObject) {
-      dispatch({
-        type: "SET_PORTFOLIO",
-        payload: { id: 0, sections: exampleSections },
-      });
-    }
-  }
-};

@@ -1,9 +1,12 @@
 "use client";
 
+import { usePathname } from "next/navigation";
 import { Messages } from "../../../_components/Messages";
 import { useAgent } from "../../../_hooks/useAgent";
 
 const SectionPage = () => {
+  const pathname = usePathname();
+  const subSectionTitle = pathname.split("/")[3].replaceAll(/%20/g, " ");
   const {
     thread,
     messages,
@@ -13,7 +16,7 @@ const SectionPage = () => {
     setInputContent,
     resetThread,
     error,
-  } = useAgent("skeleton");
+  } = useAgent("skeleton", "write:" + subSectionTitle);
 
   return (
     <div className="flex flex-col h-screen w-full items-center justify-between bg-gray-50">

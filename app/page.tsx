@@ -59,8 +59,8 @@ export default function Home() {
       if (skeletonThread) {
         await postMessage({
           updatedMessages,
-          skeletonAssistantId: skeletonAssistant?.id as string,
-          skeletonThreadId: skeletonThread.id,
+          currentAssistantId: skeletonAssistant?.id as string,
+          currentThreadId: skeletonThread.id,
           setError,
           setRunState,
         });
