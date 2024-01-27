@@ -1,5 +1,4 @@
-import { Assistant } from "next/font/google";
-import { ChatGPTMessage, RunStates } from "../page";
+import { ChatGPTMessage, RunStates } from "../_hooks/useAgent";
 
 export function Messages({
   messages,
@@ -23,13 +22,13 @@ export function Messages({
 }
 
 const UserMessage = ({ content }: { content: string }) => (
-  <div className="p-4 rounded-xl border shadow-sm self-end max-w-[700px] bg-cyan-50">
+  <div className="p-4 rounded-xl border shadow-sm self-end max-w-[700px] bg-gray-100">
     <p className="">{content}</p>
   </div>
 );
 
 const AssistantMessage = ({ content }: { content: string }) => (
-  <div className="p-4 rounded-xl border shadow-sm border-gray self-baseline max-w-[700px] bg-yellow-50">
+  <div className="p-4 rounded-xl border shadow-sm border-gray self-baseline max-w-[700px] bg-gray-50">
     <p>{content}</p>
   </div>
 );

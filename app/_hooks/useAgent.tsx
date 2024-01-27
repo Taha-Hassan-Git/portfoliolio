@@ -1,10 +1,20 @@
 import { Thread } from "openai/resources/beta/index.mjs";
 import { Run } from "openai/resources/beta/threads/index.mjs";
 import { useState, useEffect, SetStateAction } from "react";
-import { RunStates, ChatGPTMessage } from "../page";
+
 import { createThread, getMessages, postMessage } from "../utils/openAi";
-import { LocalStorageSetter, useLocalStorage } from "./useLocalStorageState";
-import { exampleSections, usePortfolioDispatch } from "../_store/store";
+import { useLocalStorage } from "./useLocalStorageState";
+import { usePortfolioDispatch } from "../_store/store";
+
+export interface ChatGPTMessage {
+  role: "assistant" | "user";
+  content: string;
+}
+
+export type RunStates =
+  | { name: "running"; run: Run }
+  | { name: "ready" }
+  | { name: "error" };
 
 export function useAgent(agent: "skeleton", key: string) {
   const dispatch = usePortfolioDispatch();
