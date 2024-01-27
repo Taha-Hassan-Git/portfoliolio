@@ -18,7 +18,7 @@ Most features aren't yet fully-functional, feel free to fix something and push u
 
 ## Getting Started
 
-First clone the repo and install dependencies:
+1. First clone the repo and install dependencies:
 
 ```bash
 git clone https://github.com/Taha-Hassan-Git/portfoliolio
@@ -26,7 +26,9 @@ cd portfoliolio
 npm i
 ```
 
-Then run the development server:
+2. Create a .env file in the route of your project and put your OpenAi API key in it.
+
+3. Then run the development server:
 
 ```bash
 npm run dev
