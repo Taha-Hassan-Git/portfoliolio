@@ -21,7 +21,8 @@ export default function Home() {
   useEffect(() => {
     const checkProject = (aiResponse: string, dispatch: any) => {
       //check if the message has triple quotes """message"""
-      const tripleQuoteRegex = /"""(.*?)"""/;
+      console.log("checking for triple quotes");
+      const tripleQuoteRegex = /```(.*?)```/;
       const tripleQuoteMatches = aiResponse.match(tripleQuoteRegex);
       if (tripleQuoteMatches) {
         console.log("contains triple brackets");

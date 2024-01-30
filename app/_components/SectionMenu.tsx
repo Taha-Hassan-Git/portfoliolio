@@ -15,7 +15,7 @@ export const SectionMenu = () => {
   }
 
   return (
-    <div className="flex flex-col self-start h-full w-[400px] border-l shadow-sm items-baseline gap-4 bg-gray-100">
+    <div className="flex flex-col self-start h-full w-[400px] border-l shadow-sm overflow-scroll items-baseline gap-4 bg-gray-100">
       <Accordion.Root
         defaultValue={[sectionTitle]}
         type="multiple"
@@ -30,7 +30,7 @@ export const SectionMenu = () => {
                 className="w-full"
               >
                 <div className="flex flex-col items-center p-4 w-full">
-                  <Accordion.Trigger className="text-sm font-normal flex gap-3 justify-between items-center group w-full border-2 border-black p-2 hover:bg-gray-100 [box-shadow:3px_3px_#b6b6b6] data-[state=open]:[box-shadow:3px_3px_rgb(82_82_82)]">
+                  <Accordion.Trigger className="text-sm font-normal flex gap-3 justify-between items-center group w-full border-2 border-black p-2 hover:bg-gray-100 [box-shadow:2px_2px_#b6b6b6] data-[state=open]:[box-shadow:3px_3px_rgb(82_82_82)]">
                     <div className="text-left overflow-hidden whitespace-nowrap text-overflow-ellipsis">
                       <p className="overflow-ellipses">{section.title}</p>
                     </div>

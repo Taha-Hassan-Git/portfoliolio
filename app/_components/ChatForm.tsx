@@ -27,7 +27,7 @@ export function ChatForm({
       {error && <p>{error}</p>}
       <button // Only allow the user to submit messages when a run is complete
         disabled={runState.name !== "ready"}
-        className="p-2 rounded-lg self-end border bg-blue-600 text-white"
+        className="p-2 rounded-lg self-end border bg-black text-white"
         type="submit"
       >
         SUBMIT
