@@ -1,5 +1,5 @@
 import OpenAI from "openai";
-import { ChatGPTMessage } from "../../page";
+import { ChatGPTMessage } from "../../_hooks/useAgent";
 
 interface MessageRequestPayload {
   userMessage: ChatGPTMessage;
