@@ -95,7 +95,6 @@ export function useAgent(agent: "skeleton", key: string) {
           if (run.status === "completed") {
             setRunState({ name: "ready" });
             const updatedMessages = await getMessages(run.thread_id);
-            console.log(updatedMessages);
             const content = updatedMessages[0].content[0];
 
             if ("text" in content) {

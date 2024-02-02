@@ -30,22 +30,21 @@ const UserMessage = ({ content }: { content: string }) => {
 };
 
 const AssistantMessage = ({ content }: { content: string }) => {
-  console.log({ content });
-  // find and remove section between triple backticks ```message``` in content
-  function extractSubstring(str: string) {
-    // Regular expression for finding a substring between triple backticks
-    const regex = /```(.*?)```/;
-
-    // Using the regex to match the string
-    const match = str.match(regex);
-
-    // Return the captured group if a match is found, otherwise return an empty string
-    return match ? match[1] : "";
+  //check if the string has ```json in it
+  if (content.includes("```json")) {
+    //if it does, we want to parse the json and display it as a json object
+    const json = content.replace("```json", "").replace("```", "");
+    return (
+      <div className="flex flex-col p-4 rounded-xl border shadow-sm self-start max-w-[700px] max-h-[300px] bg-gray-200 relative">
+        <button className="self-end absolute rounded py-1 px-2 border border-gray-300 bg-gray-100">
+          Copy
+        </button>
+        <pre className="max-w-[700px] whitespace-pre-wrap  overflow-scroll">
+          {JSON.stringify(JSON.parse(json), null, 2)}
+        </pre>
+      </div>
+    );
   }
-
-  // Example usage
-  const result = extractSubstring(content);
-  console.log(result);
   return (
     <div className="p-4 rounded-xl border shadow-sm self-start max-w-[700px] bg-gray-50">
       <p>{content}</p>
