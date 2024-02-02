@@ -7,7 +7,6 @@ import { ChevronDown } from "./icons";
 export const SectionMenu = () => {
   const portfolio = usePortfolio();
   const pathname = usePathname();
-  if (portfolio.sections.length === 0) return redirect("/");
 
   let sectionTitle = pathname.split("/")[2];
   if (sectionTitle) {
