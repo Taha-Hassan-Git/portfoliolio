@@ -1,12 +1,12 @@
 "use client";
 import { PlanMenu } from "./_components/PlanMenu";
 import { AiChat } from "./_components/AiChat";
-import { useEffect } from "react";
-import { exampleSections, usePortfolioDispatch } from "./_store/store";
+import { usePortfolio } from "./_store/store";
 import { useAgent } from "./_hooks/useAgent";
+import { ExistingPortfolioPage } from "./_components/ExistingPortfolioPage";
 
 export default function Home() {
-  const dispatch = usePortfolioDispatch();
+  const portfolio = usePortfolio();
   const {
     thread,
     messages,
@@ -17,7 +17,13 @@ export default function Home() {
     resetThread,
     error,
   } = useAgent("skeleton", "plan:");
-
+  if (portfolio && portfolio.sections.length > 0) {
+    return (
+      <div className="flex flex-col h-full grow items-center justify-around bg-gray-50 p-4">
+        <ExistingPortfolioPage />
+      </div>
+    );
+  }
   return (
     <>
       <div className="flex flex-col h-full grow items-center justify-between bg-gray-50">

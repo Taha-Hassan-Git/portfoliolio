@@ -302,7 +302,7 @@ export type SectionType = {
 };
 export type PortfolioType = { id: 0; sections: SectionType[] };
 
-// Add an action to set the porfolio
+// Add an action to set the portfolio
 type Action =
   | { type: "EDIT_SECTION_TITLE"; payload: SectionType }
   | { type: "EDIT_SECTION_DESCRIPTION"; payload: SectionType }
@@ -329,7 +329,7 @@ const PortfolioDispatchContext = createContext<DispatchType | null>(null);
 export const PortfolioProvider = ({ children }: { children: ReactNode }) => {
   const [portfolio, dispatch] = useReducer(portfolioReducer, {
     id: 0,
-    sections: exampleSections,
+    sections: [],
   });
   return (
     <PortfolioContext.Provider value={portfolio}>
@@ -345,7 +345,12 @@ export const usePortfolio = () => {
 };
 
 export const usePortfolioDispatch = () => {
-  return useContext(PortfolioDispatchContext);
+  const dispatch = useContext(PortfolioDispatchContext);
+  if (dispatch) return dispatch;
+  else
+    throw new Error(
+      "usePortfolioDispatch must be used within a PortfolioProvider"
+    );
 };
 
 export const portfolioReducer = (
