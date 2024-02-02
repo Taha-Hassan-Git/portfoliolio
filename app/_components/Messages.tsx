@@ -1,4 +1,10 @@
+import { use } from "react";
 import { ChatGPTMessage, RunStates } from "../_hooks/useAgent";
+import {
+  PortfolioType,
+  SectionType,
+  usePortfolioPreviews,
+} from "../_store/store";
 
 export function Messages({
   messages,
@@ -30,16 +36,26 @@ const UserMessage = ({ content }: { content: string }) => {
 };
 
 const AssistantMessage = ({ content }: { content: string }) => {
+  const { setPortfolioPreviews } = usePortfolioPreviews();
+  const setPreviews = (json: []) => {
+    setPortfolioPreviews((prevPreviews: SectionType[]) => [
+      ...prevPreviews,
+      json,
+    ]);
+  };
   //check if the string has ```json in it
   if (content.includes("```json")) {
     //if it does, we want to parse the json and display it as a json object
     const json = content.replace("```json", "").replace("```", "");
     return (
-      <div className="flex flex-col p-4 rounded-xl border shadow-sm self-start max-w-[700px] max-h-[300px] bg-gray-200 relative">
-        <button className="self-end absolute rounded py-1 px-2 border border-gray-300 bg-gray-100">
+      <div className="flex flex-col rounded-xl border shadow-sm self-start max-w-[700px] max-h-[300px] bg-gray-200 relative">
+        <button
+          onClick={() => setPreviews(JSON.parse(json))}
+          className="self-end absolute top-2 right-2 rounded py-1 px-2 border border-gray-300 bg-gray-100"
+        >
           Copy
         </button>
-        <pre className="max-w-[700px] whitespace-pre-wrap  overflow-scroll">
+        <pre className="w-full h-full whitespace-pre-wrap  overflow-scroll p-5">
           {JSON.stringify(JSON.parse(json), null, 2)}
         </pre>
       </div>

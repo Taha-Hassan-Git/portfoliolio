@@ -1,6 +1,12 @@
 "use client";
 
-import { ReactNode, createContext, useContext, useReducer } from "react";
+import {
+  ReactNode,
+  createContext,
+  useContext,
+  useReducer,
+  useState,
+} from "react";
 
 export const exampleSections = [
   {
@@ -301,6 +307,10 @@ export type SectionType = {
   subsection: SubsectionType[];
 };
 export type PortfolioType = { id: 0; sections: SectionType[] };
+export type PortfolioPreviewsType = {
+  portfolioPreviews: SectionType[][];
+  setPortfolioPreviews: (value: any) => void;
+};
 
 // Add an action to set the portfolio
 type Action =
@@ -324,6 +334,10 @@ const PortfolioContext = createContext<PortfolioType>({
   id: 0,
   sections: [],
 });
+const PortfolioPreviewsContext = createContext<PortfolioPreviewsType>({
+  portfolioPreviews: [],
+  setPortfolioPreviews: () => {},
+});
 const PortfolioDispatchContext = createContext<DispatchType | null>(null);
 
 export const PortfolioProvider = ({ children }: { children: ReactNode }) => {
@@ -331,10 +345,15 @@ export const PortfolioProvider = ({ children }: { children: ReactNode }) => {
     id: 0,
     sections: [],
   });
+  const [portfolioPreviews, setPortfolioPreviews] = useState([]);
   return (
     <PortfolioContext.Provider value={portfolio}>
       <PortfolioDispatchContext.Provider value={dispatch}>
-        {children}
+        <PortfolioPreviewsContext.Provider
+          value={{ portfolioPreviews, setPortfolioPreviews }}
+        >
+          {children}
+        </PortfolioPreviewsContext.Provider>
       </PortfolioDispatchContext.Provider>
     </PortfolioContext.Provider>
   );
@@ -350,6 +369,15 @@ export const usePortfolioDispatch = () => {
   else
     throw new Error(
       "usePortfolioDispatch must be used within a PortfolioProvider"
+    );
+};
+
+export const usePortfolioPreviews = () => {
+  const portfolioPreviews = useContext(PortfolioPreviewsContext);
+  if (portfolioPreviews) return portfolioPreviews;
+  else
+    throw new Error(
+      "usePortfolioPreviews must be used within a PortfolioProvider"
     );
 };
 
