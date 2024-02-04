@@ -3,7 +3,7 @@ import { ChatGPTMessage, RunStates } from "../_hooks/useAgent";
 import {
   PortfolioType,
   SectionType,
-  usePortfolioPreviews,
+  usePortfolioPreview,
 } from "../_store/store";
 
 export function Messages({
@@ -36,12 +36,9 @@ const UserMessage = ({ content }: { content: string }) => {
 };
 
 const AssistantMessage = ({ content }: { content: string }) => {
-  const { setPortfolioPreviews } = usePortfolioPreviews();
-  const setPreviews = (json: []) => {
-    setPortfolioPreviews((prevPreviews: SectionType[]) => [
-      ...prevPreviews,
-      json,
-    ]);
+  const { setPortfolioPreview } = usePortfolioPreview();
+  const setPreview = (json: []) => {
+    setPortfolioPreview(json);
   };
   //check if the string has ```json in it
   if (content.includes("```json")) {
@@ -50,7 +47,7 @@ const AssistantMessage = ({ content }: { content: string }) => {
     return (
       <div className="flex flex-col rounded-xl border shadow-sm self-start max-w-[700px] max-h-[300px] bg-gray-200 relative">
         <button
-          onClick={() => setPreviews(JSON.parse(json))}
+          onClick={() => setPreview(JSON.parse(json))}
           className="self-end absolute top-2 right-2 rounded py-1 px-2 border border-gray-300 bg-gray-100"
         >
           Copy
@@ -61,6 +58,7 @@ const AssistantMessage = ({ content }: { content: string }) => {
       </div>
     );
   }
+  //Otherwise just show the message
   return (
     <div className="p-4 rounded-xl border shadow-sm self-start max-w-[700px] bg-gray-50">
       <p>{content}</p>

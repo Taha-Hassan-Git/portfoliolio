@@ -307,9 +307,9 @@ export type SectionType = {
   subsection: SubsectionType[];
 };
 export type PortfolioType = { id: 0; sections: SectionType[] };
-export type PortfolioPreviewsType = {
-  portfolioPreviews: SectionType[][];
-  setPortfolioPreviews: (value: any) => void;
+export type portfolioPreviewType = {
+  portfolioPreview: SectionType[];
+  setPortfolioPreview: (value: any) => void;
 };
 
 // Add an action to set the portfolio
@@ -334,9 +334,9 @@ const PortfolioContext = createContext<PortfolioType>({
   id: 0,
   sections: [],
 });
-const PortfolioPreviewsContext = createContext<PortfolioPreviewsType>({
-  portfolioPreviews: [],
-  setPortfolioPreviews: () => {},
+const portfolioPreviewContext = createContext<portfolioPreviewType>({
+  portfolioPreview: [],
+  setPortfolioPreview: () => {},
 });
 const PortfolioDispatchContext = createContext<DispatchType | null>(null);
 
@@ -345,15 +345,15 @@ export const PortfolioProvider = ({ children }: { children: ReactNode }) => {
     id: 0,
     sections: [],
   });
-  const [portfolioPreviews, setPortfolioPreviews] = useState([]);
+  const [portfolioPreview, setPortfolioPreview] = useState([]);
   return (
     <PortfolioContext.Provider value={portfolio}>
       <PortfolioDispatchContext.Provider value={dispatch}>
-        <PortfolioPreviewsContext.Provider
-          value={{ portfolioPreviews, setPortfolioPreviews }}
+        <portfolioPreviewContext.Provider
+          value={{ portfolioPreview, setPortfolioPreview }}
         >
           {children}
-        </PortfolioPreviewsContext.Provider>
+        </portfolioPreviewContext.Provider>
       </PortfolioDispatchContext.Provider>
     </PortfolioContext.Provider>
   );
@@ -372,12 +372,12 @@ export const usePortfolioDispatch = () => {
     );
 };
 
-export const usePortfolioPreviews = () => {
-  const portfolioPreviews = useContext(PortfolioPreviewsContext);
-  if (portfolioPreviews) return portfolioPreviews;
+export const usePortfolioPreview = () => {
+  const portfolioPreview = useContext(portfolioPreviewContext);
+  if (portfolioPreview) return portfolioPreview;
   else
     throw new Error(
-      "usePortfolioPreviews must be used within a PortfolioProvider"
+      "usePortfolioPreview must be used within a PortfolioProvider"
     );
 };
 
