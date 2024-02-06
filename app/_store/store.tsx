@@ -102,8 +102,6 @@ export const portfolioReducer = (
 ): PortfolioType => {
   switch (action.type) {
     case "EDIT_SECTION_TITLE": {
-      console.log("EDIT_SECTION_TITLE");
-      console.log(action.payload);
       const sections = portfolio.sections.map((section: SectionType) => {
         if (section.id === action.payload.id) {
           const actionPayload = action.payload as SectionType;
@@ -225,6 +223,3 @@ export const portfolioReducer = (
     }
   }
 };
-
-const usermessage =
-  "I'm an apprentice at a company called tldraw, they make an open source developer library that helps people make applications based around a collaborative whiteboard. They also make an online collaborative whiteboard of their own, which is free-to-use and has features allowing a user to log in and save projects. Introduction Overview of tldraw and their products Description of your role and responsibilities as an apprentice Tldraw Open Source Library Contributions to the open source library codebase (specific features, bug fixes, optimizations etc.) Pull requests and code reviews Documentation contributions Community engagement (GitHub issues, StackOverflow etc.) Tldraw Online Whiteboard Work on front-end components and views Back-end features like user accounts and data storage Collaborative editing implementation Performance optimizations and testing Integration with authentication providers Design and Branding Contributions to UI, UX and visual design Development of style guides, components and themes Accessibility and internationalization Testing and Quality Assurance Writing unit and integration tests Setting up CI/CD pipelines Automated visual regression testing Cross-browser and device testing Conclusion Dev Dashboard Created internal tool to track GitHub repositories Integrations with GitHub API to pull data on issues, pull requests, contributors etc. Tracking of social media channels and analytics Data visualizations and reporting dashboards Alerting based on repository activity Technologies used like React, Node.js, MongoDB Key skills learned and improved Areas of focus for future growth";

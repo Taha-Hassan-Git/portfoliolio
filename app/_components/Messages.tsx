@@ -48,6 +48,15 @@ const AssistantMessage = ({ content }: { content: string }) => {
   if (content.includes("```json")) {
     //if it does, we want to parse the json and display it as a json object
     const json = content.replace("```json", "").replace("```", "");
+    try {
+      JSON.parse(json);
+    } catch {
+      return (
+        <div className="p-4 rounded-xl border shadow-sm self-start max-w-[700px] bg-gray-50">
+          <p>{content}</p>
+        </div>
+      );
+    }
     return (
       <div className="flex flex-col rounded-xl border shadow-sm self-start max-w-[700px] max-h-[300px] bg-gray-200 relative">
         <button
