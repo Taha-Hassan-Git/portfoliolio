@@ -36,9 +36,13 @@ const UserMessage = ({ content }: { content: string }) => {
 };
 
 const AssistantMessage = ({ content }: { content: string }) => {
-  const { setPortfolioPreview } = usePortfolioPreview();
+  const { previewDispatch } = usePortfolioPreview();
   const setPreview = (json: []) => {
-    setPortfolioPreview(json);
+    previewDispatch &&
+      previewDispatch({
+        type: "SET_PORTFOLIO",
+        payload: { id: 0, sections: json },
+      });
   };
   //check if the string has ```json in it
   if (content.includes("```json")) {
