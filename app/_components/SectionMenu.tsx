@@ -1,6 +1,6 @@
 "use client";
 import * as Accordion from "@radix-ui/react-accordion";
-import { redirect, usePathname } from "next/navigation";
+import { usePathname } from "next/navigation";
 import { SectionType, SubsectionType, usePortfolio } from "../_store/store";
 import { ChevronDown } from "./icons";
 

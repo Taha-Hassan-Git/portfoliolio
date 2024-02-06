@@ -5,7 +5,6 @@ export type LocalStorageSetter<T> = (setter: T | ((value: T) => T)) => void;
 export function useLocalStorage<T = any>(key: string, defaultValue: T) {
   const [state, setState] = useState(defaultValue);
 
-  // Load the value from local storage on first render (before paint to avoid flash)
   useLayoutEffect(() => {
     const value = localStorage.getItem(key);
     if (value) {
@@ -17,7 +16,6 @@ export function useLocalStorage<T = any>(key: string, defaultValue: T) {
     }
   }, [key]);
 
-  // Setter. Like a regular useState setter, this works as either () => next or (prev) => next
   const updateValue = useCallback(
     (setter: T | ((value: T) => T)) => {
       setState((s) => {
