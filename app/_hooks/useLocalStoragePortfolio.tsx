@@ -1,3 +1,4 @@
+"use client";
 import { useReducer, useEffect, Dispatch } from "react";
 import {
   PortfolioType,
@@ -137,17 +138,21 @@ export function useLocalStoragePortfolio(
   key: string,
   initialState: PortfolioType
 ): [PortfolioType, Dispatch<ActionTypes>] {
-  const [state, dispatch] = useReducer(
-    portfolioReducer,
-    initialState,
-    (initial) => {
-      const storedData =
-        typeof window !== "undefined" && window.localStorage.getItem(key);
-      return storedData ? JSON.parse(storedData) : initial;
-    }
-  );
+  // Initialize state with initialState. Actual initialization from localStorage
+  // will happen inside useEffect to ensure it's client-side
+  const [state, dispatch] = useReducer(portfolioReducer, initialState);
 
-  // Update local storage whenever the state changes
+  useEffect(() => {
+    // Attempt to load existing state from localStorage only on client-side
+    const storedData =
+      typeof window !== "undefined" ? window.localStorage.getItem(key) : null;
+    if (storedData) {
+      const parsedData = JSON.parse(storedData);
+      dispatch({ type: "INITIALIZE", payload: parsedData }); // Assuming you have an 'INITIALIZE' action or similar
+    }
+  }, [key]);
+
+  // Update local storage whenever the state changes, also only on client-side
   useEffect(() => {
     if (typeof window !== "undefined") {
       window.localStorage.setItem(key, JSON.stringify(state));

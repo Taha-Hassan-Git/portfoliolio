@@ -1,4 +1,11 @@
-import { PortfolioType } from "../_store/store";
+"use client";
+import { useState, useEffect } from "react";
+import {
+  PortfolioType,
+  SectionType,
+  SubsectionType,
+  usePortfolioPreview,
+} from "../_store/store";
 
 export function PreviewPortfolio({
   portfolio,

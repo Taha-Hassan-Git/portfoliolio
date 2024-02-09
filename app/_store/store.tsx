@@ -1,5 +1,4 @@
 "use client";
-
 import { ReactNode, createContext, useContext, useReducer } from "react";
 import { useLocalStoragePortfolio } from "../_hooks/useLocalStoragePortfolio";
 
@@ -80,7 +79,9 @@ export const PortfolioProvider = ({ children }: { children: ReactNode }) => {
 };
 
 export const usePortfolio = () => {
-  return useContext(PortfolioContext);
+  const portfolio = useContext(PortfolioContext);
+  if (portfolio) return portfolio;
+  else throw new Error("usePortfolio must be used within a PortfolioProvider");
 };
 
 export const usePortfolioDispatch = () => {

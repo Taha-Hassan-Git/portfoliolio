@@ -1,3 +1,4 @@
+"use client";
 import { usePortfolioDispatch, usePortfolioPreview } from "../_store/store";
 import { EditPreviewPortfolio } from "./EditPreviewPortfolio";
 

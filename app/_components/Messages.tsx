@@ -1,3 +1,4 @@
+"use client";
 import { ChatGPTMessage, RunStates } from "../_hooks/useAgent";
 import { usePortfolioPreview } from "../_store/store";
 
