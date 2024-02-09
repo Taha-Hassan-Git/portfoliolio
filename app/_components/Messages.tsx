@@ -1,10 +1,5 @@
-import { use } from "react";
 import { ChatGPTMessage, RunStates } from "../_hooks/useAgent";
-import {
-  PortfolioType,
-  SectionType,
-  usePortfolioPreview,
-} from "../_store/store";
+import { usePortfolioPreview } from "../_store/store";
 
 export function Messages({
   messages,

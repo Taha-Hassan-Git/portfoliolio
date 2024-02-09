@@ -1,10 +1,10 @@
 import { usePortfolioDispatch, usePortfolioPreview } from "../_store/store";
-import { PreviewPortfolioEdit } from "./PreviewPortfolio";
+import { EditPreviewPortfolio } from "./EditPreviewPortfolio";
 
 export function PlanMenu() {
   const { portfolioPreview } = usePortfolioPreview();
   const dispatch = usePortfolioDispatch();
-  
+
   const setPortfolio = () => {
     dispatch({
       type: "SET_PORTFOLIO",
@@ -14,7 +14,7 @@ export function PlanMenu() {
   return (
     <div className="w-[400px] flex flex-col gap-4 items-center bg-gray-100 border-l shadow-sm p-4 overflow-scroll">
       <div className="bg-gray-50 grow w-auto">
-        <PreviewPortfolioEdit
+        <EditPreviewPortfolio
           portfolio={{ id: 0, sections: portfolioPreview }}
           classNames="max-h-[80vh] overflow-scroll"
         />

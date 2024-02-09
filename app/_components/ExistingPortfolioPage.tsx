@@ -8,6 +8,7 @@ import { useRouter } from "next/navigation";
 export function ExistingPortfolioPage() {
   const dispatch = usePortfolioDispatch();
   const portfolio = usePortfolio();
+  console.log(portfolio);
   const router = useRouter();
   const resetProject = () => {
     dispatch({ type: "SET_PORTFOLIO", payload: { id: 0, sections: [] } });

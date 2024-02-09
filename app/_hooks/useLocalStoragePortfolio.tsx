@@ -141,14 +141,17 @@ export function useLocalStoragePortfolio(
     portfolioReducer,
     initialState,
     (initial) => {
-      const storedData = localStorage.getItem(key);
+      const storedData =
+        typeof window !== "undefined" && window.localStorage.getItem(key);
       return storedData ? JSON.parse(storedData) : initial;
     }
   );
 
   // Update local storage whenever the state changes
   useEffect(() => {
-    localStorage.setItem(key, JSON.stringify(state));
+    if (typeof window !== "undefined") {
+      window.localStorage.setItem(key, JSON.stringify(state));
+    }
   }, [key, state]);
 
   return [state, dispatch];

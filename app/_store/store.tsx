@@ -34,6 +34,7 @@ type Action =
   | { type: "DELETE_SUBSECTION"; payload: SubsectionType }
   | { type: "ADD_SUBSECTION"; payload: SubsectionType }
   | { type: "SET_PORTFOLIO"; payload: PortfolioType };
+export type ActionType = Action["type"];
 export type ActionTypes = {
   type: string;
   payload: SectionType | SubsectionType | PortfolioType;
