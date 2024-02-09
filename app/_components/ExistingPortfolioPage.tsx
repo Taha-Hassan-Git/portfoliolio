@@ -1,13 +1,16 @@
 "use client";
 import { PreviewPortfolio } from "./PreviewPortfolio";
 import React from "react";
-import { usePortfolio, usePortfolioDispatch } from "../_store/store";
+import { PortfolioType, usePortfolioDispatch } from "../_store/store";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 
-export function ExistingPortfolioPage() {
+export function ExistingPortfolioPage({
+  portfolio,
+}: {
+  portfolio: PortfolioType;
+}) {
   const dispatch = usePortfolioDispatch();
-  const portfolio = usePortfolio();
   const router = useRouter();
   const resetProject = () => {
     dispatch({ type: "SET_PORTFOLIO", payload: { id: 0, sections: [] } });

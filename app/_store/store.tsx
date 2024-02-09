@@ -1,5 +1,4 @@
 "use client";
-
 import { ReactNode, createContext, useContext, useReducer } from "react";
 import { useLocalStoragePortfolio } from "../_hooks/useLocalStoragePortfolio";
 
@@ -34,6 +33,7 @@ type Action =
   | { type: "DELETE_SUBSECTION"; payload: SubsectionType }
   | { type: "ADD_SUBSECTION"; payload: SubsectionType }
   | { type: "SET_PORTFOLIO"; payload: PortfolioType };
+export type ActionType = Action["type"];
 export type ActionTypes = {
   type: string;
   payload: SectionType | SubsectionType | PortfolioType;
@@ -79,7 +79,9 @@ export const PortfolioProvider = ({ children }: { children: ReactNode }) => {
 };
 
 export const usePortfolio = () => {
-  return useContext(PortfolioContext);
+  const portfolio = useContext(PortfolioContext);
+  if (portfolio) return portfolio;
+  else throw new Error("usePortfolio must be used within a PortfolioProvider");
 };
 
 export const usePortfolioDispatch = () => {
