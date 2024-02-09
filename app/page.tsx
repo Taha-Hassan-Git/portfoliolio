@@ -20,7 +20,7 @@ export default function Home() {
   if (portfolio && portfolio.sections.length > 0) {
     return (
       <div className="flex flex-col h-full grow items-center justify-around bg-gray-50 p-4">
-        <ExistingPortfolioPage />
+        <ExistingPortfolioPage portfolio={portfolio} />
       </div>
     );
   }

@@ -1,10 +1,11 @@
+"use client";
 import { usePortfolioDispatch, usePortfolioPreview } from "../_store/store";
 import { PreviewPortfolioEdit } from "./PreviewPortfolio";
 
 export function PlanMenu() {
   const { portfolioPreview } = usePortfolioPreview();
   const dispatch = usePortfolioDispatch();
-  
+
   const setPortfolio = () => {
     dispatch({
       type: "SET_PORTFOLIO",
