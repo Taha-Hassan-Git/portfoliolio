@@ -4,7 +4,7 @@ import { usePortfolio } from "../_store/store";
 
 const WritePage = () => {
   const portfolio = usePortfolio();
-  if (portfolio && portfolio.sections.length > 0)
+  if (portfolio.sections.length > 0)
     return (
       <div className="flex flex-col grow items-center justify-center bg-gray-50">
         <h1 className="text-xl font-bold">

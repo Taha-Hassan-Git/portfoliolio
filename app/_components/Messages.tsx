@@ -1,6 +1,6 @@
 "use client";
 import { ChatGPTMessage, RunStates } from "../_hooks/useAgent";
-import { usePortfolioPreview } from "../_store/store";
+import { usePortfolioPreview, usePreviewDispatch } from "../_store/store";
 
 export function Messages({
   messages,
@@ -32,13 +32,13 @@ const UserMessage = ({ content }: { content: string }) => {
 };
 
 const AssistantMessage = ({ content }: { content: string }) => {
-  const { previewDispatch } = usePortfolioPreview();
+  const previewDispatch = usePreviewDispatch();
   const setPreview = (json: []) => {
-    previewDispatch &&
-      previewDispatch({
-        type: "SET_PORTFOLIO",
-        payload: { id: 0, sections: json },
-      });
+    console.log(json);
+    previewDispatch({
+      type: "SET_PORTFOLIO",
+      payload: { id: 0, sections: json },
+    });
   };
   //check if the string has ```json in it
   if (content.includes("```json")) {

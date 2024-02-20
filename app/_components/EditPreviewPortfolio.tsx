@@ -1,20 +1,19 @@
 "use client";
 import { useState, useEffect } from "react";
 import {
-  PortfolioType,
   SectionType,
   usePortfolioPreview,
   SubsectionType,
+  usePreviewDispatch,
 } from "../_store/store";
 
 export function EditPreviewPortfolio({
-  portfolio,
   classNames = "",
 }: {
-  portfolio: PortfolioType;
   overlay?: boolean;
   classNames?: string;
 }) {
+  const portfolio = usePortfolioPreview();
   return (
     <div
       className={
@@ -33,7 +32,7 @@ export function EditPreviewPortfolio({
 }
 
 function Section({ section }: { section: SectionType }) {
-  const { previewDispatch } = usePortfolioPreview();
+  const previewDispatch = usePreviewDispatch();
   const [title, setTitle] = useState(section.title);
   const [description, setDescription] = useState(section.description);
 
@@ -54,11 +53,10 @@ function Section({ section }: { section: SectionType }) {
     dispatchtype: "EDIT_SECTION_TITLE" | "EDIT_SECTION_DESCRIPTION"
   ) => {
     const newSection = { ...section, title };
-    previewDispatch &&
-      previewDispatch({
-        type: dispatchtype,
-        payload: newSection,
-      });
+    previewDispatch({
+      type: dispatchtype,
+      payload: newSection,
+    });
   };
 
   return (
@@ -84,7 +82,7 @@ function Section({ section }: { section: SectionType }) {
 }
 
 function SubSection({ subsection }: { subsection: SubsectionType }) {
-  const { previewDispatch } = usePortfolioPreview();
+  const previewDispatch = usePreviewDispatch();
   const [title, setTitle] = useState(subsection.title);
   const [description, setDescription] = useState(subsection.description);
 
@@ -107,12 +105,10 @@ function SubSection({ subsection }: { subsection: SubsectionType }) {
     dispatchtype: "EDIT_SUBSECTION_TITLE" | "EDIT_SUBSECTION_DESCRIPTION"
   ) => {
     const newSubsection = { ...subsection, title };
-    console.log(newSubsection);
-    previewDispatch &&
-      previewDispatch({
-        type: dispatchtype,
-        payload: newSubsection,
-      });
+    previewDispatch({
+      type: dispatchtype,
+      payload: newSubsection,
+    });
   };
 
   return (

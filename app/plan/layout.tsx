@@ -10,7 +10,7 @@ export default function WriteLayout({
   return (
     <div className="flex grow items-center justify-between overflow-scroll bg-gray-50">
       {children}
-      <PreviewPortfolio portfolio={{ id: 0, sections: [] }} />
+      <PreviewPortfolio portfolio={usePortfolioPreview()} />
     </div>
   );
 }

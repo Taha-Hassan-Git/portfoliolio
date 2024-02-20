@@ -1,6 +1,6 @@
 "use client";
-import { ReactNode, createContext, useContext, useReducer } from "react";
-import { useLocalStoragePortfolio } from "../_hooks/useLocalStoragePortfolio";
+import { ReactNode, createContext, useContext } from "react";
+import { usePersistReducer } from "../_hooks/usePersistReducer";
 
 export type SubsectionType = {
   id: number;
@@ -16,10 +16,6 @@ export type SectionType = {
   subsection: SubsectionType[];
 };
 export type PortfolioType = { id: 0; sections: SectionType[] };
-export type portfolioPreviewType = {
-  portfolioPreview: SectionType[];
-  previewDispatch: DispatchType | null;
-};
 
 // Add an action to set the portfolio
 type Action =
@@ -33,7 +29,9 @@ type Action =
   | { type: "DELETE_SUBSECTION"; payload: SubsectionType }
   | { type: "ADD_SUBSECTION"; payload: SubsectionType }
   | { type: "SET_PORTFOLIO"; payload: PortfolioType };
+
 export type ActionType = Action["type"];
+
 export type ActionTypes = {
   type: string;
   payload: SectionType | SubsectionType | PortfolioType;
@@ -44,35 +42,28 @@ const PortfolioContext = createContext<PortfolioType>({
   id: 0,
   sections: [],
 });
-const portfolioPreviewContext = createContext<portfolioPreviewType>({
-  portfolioPreview: [],
-  previewDispatch: null,
+
+const PortfolioPreviewContext = createContext<PortfolioType>({
+  id: 0,
+  sections: [],
 });
+
 const PortfolioDispatchContext = createContext<DispatchType | null>(null);
 
+const PreviewDispatchContext = createContext<DispatchType | null>(null);
+
 export const PortfolioProvider = ({ children }: { children: ReactNode }) => {
-  const [portfolio, dispatch] = useLocalStoragePortfolio("portfolio", {
-    id: 0,
-    sections: [],
-  });
-  const [portfolioPreview, previewDispatch] = useLocalStoragePortfolio(
-    "portfolioPreview",
-    {
-      id: 0,
-      sections: [],
-    }
-  );
+  const [portfolio, dispatch] = usePersistReducer("portfolio");
+  const [portfolioPreview, previewDispatch] =
+    usePersistReducer("portfolioPreview");
   return (
     <PortfolioContext.Provider value={portfolio}>
       <PortfolioDispatchContext.Provider value={dispatch}>
-        <portfolioPreviewContext.Provider
-          value={{
-            portfolioPreview: [...portfolioPreview.sections],
-            previewDispatch,
-          }}
-        >
-          {children}
-        </portfolioPreviewContext.Provider>
+        <PortfolioPreviewContext.Provider value={portfolioPreview}>
+          <PreviewDispatchContext.Provider value={previewDispatch}>
+            {children}
+          </PreviewDispatchContext.Provider>
+        </PortfolioPreviewContext.Provider>
       </PortfolioDispatchContext.Provider>
     </PortfolioContext.Provider>
   );
@@ -94,10 +85,19 @@ export const usePortfolioDispatch = () => {
 };
 
 export const usePortfolioPreview = () => {
-  const portfolioPreview = useContext(portfolioPreviewContext);
+  const portfolioPreview = useContext(PortfolioPreviewContext);
   if (portfolioPreview) return portfolioPreview;
   else
     throw new Error(
       "usePortfolioPreview must be used within a PortfolioProvider"
+    );
+};
+
+export const usePreviewDispatch = () => {
+  const previewDispatch = useContext(PreviewDispatchContext);
+  if (previewDispatch) return previewDispatch;
+  else
+    throw new Error(
+      "usePreviewDispatch must be used within a PortfolioProvider"
     );
 };
