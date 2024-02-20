@@ -1,7 +1,3 @@
-"use client";
-import { PreviewPortfolio } from "../_components/PreviewPortfolio";
-import { usePortfolioPreview } from "../_store/store";
-
 export default function WriteLayout({
   children,
 }: {
@@ -10,7 +6,6 @@ export default function WriteLayout({
   return (
     <div className="flex grow items-center justify-between overflow-scroll bg-gray-50">
       {children}
-      <PreviewPortfolio portfolio={usePortfolioPreview()} />
     </div>
   );
 }

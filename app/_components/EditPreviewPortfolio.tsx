@@ -14,6 +14,7 @@ export function EditPreviewPortfolio({
   classNames?: string;
 }) {
   const portfolio = usePortfolioPreview();
+  console.log({ portfolio });
   return (
     <div
       className={
@@ -71,12 +72,13 @@ function Section({ section }: { section: SectionType }) {
         onChange={handleSectionDescriptionChange}
         onBlur={() => handleBlur("EDIT_SECTION_DESCRIPTION")}
       />
-      {section.subsection.map((subsection) => (
-        <SubSection
-          key={subsection.id + subsection.title + "preview"}
-          subsection={subsection}
-        />
-      ))}
+      {section.subsection.length > 1 &&
+        section.subsection.map((subsection) => (
+          <SubSection
+            key={subsection.id + subsection.title + "preview"}
+            subsection={subsection}
+          />
+        ))}
     </div>
   );
 }
@@ -139,7 +141,7 @@ function Input({
   className?: string;
 }) {
   return (
-    <Input
+    <input
       className={"text-sm p-2 w-[90%] rounded " + className}
       value={value}
       onChange={onChange}
