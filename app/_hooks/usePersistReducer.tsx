@@ -1,5 +1,5 @@
-"use client";
-import { useReducer, useEffect, Dispatch } from "react";
+import { useCallback, useReducer } from "react";
+import { useLocalStorage } from "react-use";
 import {
   PortfolioType,
   ActionTypes,
@@ -7,7 +7,12 @@ import {
   SubsectionType,
 } from "../_store/store";
 
-export const portfolioReducer = (
+const INITIAL_STATE: PortfolioType = {
+  id: 0,
+  sections: [],
+};
+
+const reducer = (
   portfolio: PortfolioType,
   action: ActionTypes
 ): PortfolioType => {
@@ -134,30 +139,28 @@ export const portfolioReducer = (
   }
 };
 
-export function useLocalStoragePortfolio(
-  key: string,
-  initialState: PortfolioType
-): [PortfolioType, Dispatch<ActionTypes>] {
-  // Initialize state with initialState. Actual initialization from localStorage
-  // will happen inside useEffect to ensure it's client-side
-  const [state, dispatch] = useReducer(portfolioReducer, initialState);
+export const usePersistReducer = (key: string) => {
+  // grab saved value from `localStorage` and
+  // a function to update it. if
+  // no value is retrieved, use `INITIAL_STATE`
+  const [savedState, saveState] = useLocalStorage(key, INITIAL_STATE);
 
-  useEffect(() => {
-    // Attempt to load existing state from localStorage only on client-side
-    const storedData =
-      typeof window !== "undefined" ? window.localStorage.getItem(key) : null;
-    if (storedData) {
-      const parsedData = JSON.parse(storedData);
-      dispatch({ type: "INITIALIZE", payload: parsedData }); // Assuming you have an 'INITIALIZE' action or similar
-    }
-  }, [key]);
+  // wrap `reducer` with a memoized function that
+  // syncs the `newState` to `localStorage` before
+  // returning `newState`. memoizing is important!
+  const reducerLocalStorage = useCallback(
+    (state: PortfolioType, action: ActionTypes) => {
+      const newState = reducer(state, action);
+      saveState(newState);
 
-  // Update local storage whenever the state changes, also only on client-side
-  useEffect(() => {
-    if (typeof window !== "undefined") {
-      window.localStorage.setItem(key, JSON.stringify(state));
-    }
-  }, [key, state]);
+      return newState;
+    },
+    [saveState]
+  );
+  // use wrapped reducer and the saved value from
+  // `localStorage` as params to `useReducer`.
+  // this will return `[state, dispatch]`
 
-  return [state, dispatch];
-}
+  //todo: this might not work
+  return useReducer(reducerLocalStorage, savedState ?? INITIAL_STATE);
+};
