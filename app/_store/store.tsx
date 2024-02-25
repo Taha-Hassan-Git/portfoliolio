@@ -7,6 +7,7 @@ export type SubsectionType = {
   title: string;
   description: string;
   content: string;
+  ksbs: string[];
 };
 
 export type SectionType = {

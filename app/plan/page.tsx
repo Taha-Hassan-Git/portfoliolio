@@ -1,4 +1,3 @@
-"use client";
 import { EditPreviewPortfolio } from "../_components/EditPreviewPortfolio";
 
 const PreviewPage = () => {
